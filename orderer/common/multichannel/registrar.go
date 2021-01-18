@@ -841,8 +841,13 @@ func (r *Registrar) createFollower(
 	channelID string,
 ) (*follower.Chain, types.ChannelInfo, error) {
 	fLog := flogging.MustGetLogger("orderer.commmon.follower")
+	dialerConfig := r.clusterDialer.Config.Clone()
+	dialerConfig.SecOpts.UseTLS = false;
+	pullerDialer := &cluster.PredicateDialer{
+		Config: dialerConfig,
+	}
 	blockPullerCreator, err := follower.NewBlockPullerCreator(
-		channelID, fLog, r.signer, r.clusterDialer, r.config.General.Cluster, r.bccsp)
+		channelID, fLog, r.signer, pullerDialer, r.config.General.Cluster, r.bccsp)
 	if err != nil {
 		return nil, types.ChannelInfo{}, errors.WithMessagef(err, "failed to create BlockPullerFactory for channel %s", channelID)
 	}
