@@ -842,7 +842,8 @@ func (r *Registrar) createFollower(
 ) (*follower.Chain, types.ChannelInfo, error) {
 	fLog := flogging.MustGetLogger("orderer.commmon.follower")
 	dialerConfig := r.clusterDialer.Config.Clone()
-	dialerConfig.SecOpts.UseTLS = false;
+	// the block puller client must follow the TLS config of the target endpoint
+	dialerConfig.SecOpts.UseTLS = r.config.General.TLS.Enabled;
 	pullerDialer := &cluster.PredicateDialer{
 		Config: dialerConfig,
 	}
