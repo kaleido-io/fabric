@@ -93,6 +93,12 @@ type ClientConfig struct {
 	MaxSendMsgSize int
 }
 
+// Clone clones this ClientConfig
+func (cc ClientConfig) Clone() ClientConfig {
+	shallowClone := cc
+	return shallowClone
+}
+
 // Convert the ClientConfig to the approriate set of grpc.DialOptions.
 func (cc ClientConfig) DialOptions() ([]grpc.DialOption, error) {
 	var dialOpts []grpc.DialOption
